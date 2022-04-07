@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles.css" type="text/css">
+    <title>Sup</title>
+  </head>
+
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/view">View Reminders</a></li>
+          <% if session[:signed_in] == true %>
+            <li>
+              <form action="/signout" method="post">
+                <button type="submit" class="signout-btn">
+                  Sign Out
+                </button>
+              </form>
+            </li>
+          <% elsif session[:signed_in] == false %>
+            <li><a href="/">Sign In</a></li>
+          <% end %>
+        </ul>
+      </nav>
+      <h1>Tax Day</h1>
+    </header>
+
+    <% if session[:message] %>
+      <p class="message"><%= session.delete(:message) %></p>
+    <% end %>
+
+    <% if session[:error] %>
+      <p class="error"><%= session.delete(:error) %></p>
+    <% end %>
+
+    <%= yield %>
+
+
+  </body>
+
+</html>

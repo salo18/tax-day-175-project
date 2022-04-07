@@ -1,0 +1,16 @@
+
+<h2>Time to make an account</h2>
+
+<form action="/signup/go" method="post">
+  <label for="username">Username:
+    <input type="text" name="username" id="username" value="<%= params[:username] %>">
+  </label>
+
+  <label for="password">Password:
+    <input type="password" name="password" id="password">
+  </label>
+
+  <input type="submit" value="Create Account">
+</form>
+
+

@@ -1,0 +1,90 @@
+<p class="sign-in-notice">You are signed in as <span class="pspan"><%= session[:username] %></span></p>
+
+<h2>Add a reminder</h2>
+
+<form action="/view/add" method="post">
+  <fieldset>
+  <dl>
+    <dt>
+    <label for="task" class="task">
+      Task Name
+      <dd><input type="text" name="task" id="task" placeholder="pay taxes" maxlength="30" required></dd>
+    </label>
+    </dt>
+  </dl>
+
+  <dl>
+    <dt>
+      <label for="month" class="dates">
+        Month Due
+        <dd><input type="number" name="month" id="month" placeholder="4" maxlength="2" min="1" max="12" required></dd>
+      </label>
+    </dt>
+  </dl>
+
+  <dl>
+    <dt>
+      <label for="day" class="dates">
+        Day Due
+        <dd><input type="number" name="day" id="day" placeholder="15" maxlength="2" min="1" max="31" required></dd>
+      </label>
+    </dt>
+  </dl>
+
+  <dl class="radio">
+    <input type="radio" name="agency" id="federal" value="federal" required>
+    <label for="federal">Federal</label>
+    <input type="radio" name="agency" id="state" value="state">
+    <label for="state">State</label>
+    <input type="radio" name="agency" id="local" value="local">
+    <label for="local">Local</label>
+  </dl>
+  <input type="submit" value="Add">
+
+  </fieldset>
+</form>
+
+
+<h2>Your Reminders</h2>
+<% if session[:reminders].empty? %>
+  <p>You have no reminders. Add one to get started.</p>
+<% else %>
+  <p>You have <%= session[:reminders].size %> reminders in place... <%= agency_count %></p>
+<% end %>
+
+<form action="/sort" method="get" class="sorter">
+  <label for="sort">Sort reminders by month due =></label>
+  <input type="submit" value="Sort">
+</form>
+
+<form action="/delete/all" method="post" class="sorter">
+  <label for="delele-all">Delete all reminders =></label>
+  <input type="submit" value="Delete All">
+</form>
+
+
+<table>
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>Agency</th>
+      <th>Due Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% session[:reminders].each_with_index do |hash, idx| %>
+    <tr>
+      <td><%= "#{hash[:task]}" %></td>
+      <td><%= "#{hash[:agency].capitalize}" %></td>
+      <td><%= "#{hash[:month]}/#{hash[:day]}" %></td>
+      <td>
+        <form action="/delete/<%= idx %>" method="post" class="delete">
+          <input type="submit" value="Delete">
+        </form>
+      </td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+

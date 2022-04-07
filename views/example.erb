@@ -1,0 +1,22 @@
+<p>Here is a sample reminder list:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>Agency</th>
+      <th>Due Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @example.each do |hash| %>
+    <tr>
+      <td><%= "#{hash[:task]}" %></td>
+      <td><%= "#{hash[:agency].capitalize}" %></td>
+      <td><%= "#{hash[:month]}/#{hash[:day]}" %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p>Ready to get started? <a href="/view">Set up your reminders now!</a></p>

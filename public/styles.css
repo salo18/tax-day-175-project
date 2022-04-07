@@ -1,0 +1,171 @@
+body {
+  font-family: Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  margin: 0 auto;
+  padding: 0;
+  width: 75%;
+}
+
+.message {
+  padding: 20px;
+  background-color: #3688f4;
+  color: white;
+  margin-bottom: 15px;
+}
+
+.error {
+  padding: 20px;
+  background-color: #f77066;
+  color: white;
+  margin-bottom: 15px;
+}
+
+fieldset {
+  padding: 0;
+  border: none;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+dd {
+  font-size: 14px;
+  margin: 0;
+  margin-top: 3px;
+  padding: 0;
+}
+
+/* sign in forms on home page, Add a reminder on view page, sign in on Sign In page */
+
+input[type=submit] {
+  color:#FFFFFF;
+  box-sizing: border-box;
+  background: #3369ff;
+  border-radius:0.15em;
+  padding: .5rem 1rem;
+  text-decoration:none;
+  border: none;
+  box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
+  font-size: 16px;
+
+}
+
+input[type=submit]:hover {
+  background: #5288ff;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="number"] {
+  padding: 5px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  display: block;
+  margin: 10px 0;
+  margin-top: 0;
+  width: 150px;
+  box-sizing: border-box;
+  height: 30px;
+  border-radius: 2px;
+  border: 1px solid gray;
+}
+
+/* TABLE STYLES */
+table {
+  table-layout: fixed;
+  width: 90%;
+  border-collapse: collapse;
+  border: 1px solid gray;
+  letter-spacing: 1px;
+
+}
+
+thead th:nth-child(1) {
+  width: 33%;
+}
+
+thead th:nth-child(2) {
+  width: 33%;
+}
+
+thead th:nth-child(3) {
+  width: 33%;
+}
+
+th {
+  text-decoration: underline;
+  padding: 10px;
+  background: #cbdbff;
+
+}
+
+tr {
+  background: #f6f6f6;
+}
+
+tr:nth-of-type(even) {
+  background: #e9e9e9;
+
+}
+
+td {
+  letter-spacing: 1px;
+  padding: 5px;
+  text-align: center;
+}
+
+
+/* Navigation */
+nav ul, .signout-btn {
+  display: flex;
+  list-style: none;
+  margin: 1rem auto;
+  font-size: 20px;
+  padding: 0;
+  font-family: Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+li {
+  padding: 5px;
+}
+
+li a {
+  color: #3688f4;
+}
+
+a {
+  color: #3688f4;
+}
+
+/* signout button */
+
+.signout-btn {
+  color: #3688f4;
+  background: white;
+  border: none;
+  text-decoration: underline;
+  padding: 0;
+  margin: 0;
+  cursor:pointer;
+}
+
+/* delete button */
+
+.delete {
+  margin-left: 10px;
+}
+
+/* sort button */
+
+.sorter {
+  margin-bottom: 10px;
+}
+
+.pspan {
+  color: #3688f4;
+  font-weight: 800;
+}
+
+.sign-in-notice {
+  font-size: 16px;
+  background-color: #cbdbff;
+  padding: 1rem;
+  border-radius: 10px;
+}
