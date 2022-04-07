@@ -16,6 +16,7 @@ GEM
 
 PLATFORMS
   x86_64-darwin-20
+  x86_64-linux
 
 DEPENDENCIES
   erubis
@@ -23,7 +24,7 @@ DEPENDENCIES
   sinatra (~> 1.4.7)
 
 RUBY VERSION
-   ruby 2.7.5p203
+   ruby 3.0.3p157
 
 BUNDLED WITH
    2.3.0
