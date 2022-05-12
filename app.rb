@@ -3,19 +3,6 @@ require "sinatra"
 
 =begin
 TODO:
-# - validate "add a reminder" form
-# - style form
-# - display reminders as a table
-# - validate signup --- valid username and password
-# - style sign in page
-# - style account set up page
-# - style navigation and add "Reminders" and "Signout" links
-# - block view page if not signed in
-# - reset username and password
-# - add to bottom of form... "xxx federal, xxx state, xxx local reminders"
-# - delete reminder
-# - sort reminders by date
-# - make example page
 
 <% session[:reminders].each do |hash| %>
   <p><%= "[#{hash[:agency]}] - #{hash[:task]} is due on #{hash[:month]} #{hash[:day]}" %> <p>
