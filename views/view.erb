@@ -17,7 +17,7 @@
     <dt>
       <label for="month" class="dates">
         Month Due
-        <dd><input type="number" name="month" id="month" placeholder="4" maxlength="2" min="1" max="12" required></dd>
+        <dd><input type="number" name="month" id="month" placeholder="4" maxlength="2" min="1" max="12" ></dd>
       </label>
     </dt>
   </dl>
@@ -26,7 +26,16 @@
     <dt>
       <label for="day" class="dates">
         Day Due
-        <dd><input type="number" name="day" id="day" placeholder="15" maxlength="2" min="1" max="31" required></dd>
+        <dd><input type="number" name="day" id="day" placeholder="15" maxlength="2" min="1" max="31" ></dd>
+      </label>
+    </dt>
+  </dl>
+
+  <dl>
+    <dt>
+      <label for="day" class="dates">
+        Due Date (<em>Filing days are the same each year so input dates for 2022 only</em>)
+        <dd><input type="date" name="date" id="date" value="2022-01-01" max="2022-12-31" min="2022-01-01" required></dd>
       </label>
     </dt>
   </dl>
@@ -72,18 +81,19 @@
     </tr>
   </thead>
   <tbody>
-    <% session[:reminders].each_with_index do |hash, idx| %>
+  <% @reminders.each do |hash| %>
     <tr>
-      <td><%= "#{hash[:task]}" %></td>
+      <td><%= "#{hash[:task_name]}" %></td>
       <td><%= "#{hash[:agency].capitalize}" %></td>
-      <td><%= "#{hash[:month]}/#{hash[:day]}" %></td>
+      <td><%= "#{hash[:due_date]}" %></td>
+      <p><%= "#{hash}" %></p>
       <td>
-        <form action="/delete/<%= idx %>" method="post" class="delete">
+        <form action="/delete/<%= hash[:id] %>" method="post" class="delete">
           <input type="submit" value="Delete">
         </form>
       </td>
     </tr>
-    <% end %>
+  <% end %>
   </tbody>
 </table>
 

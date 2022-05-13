@@ -1,8 +1,19 @@
 require "sinatra"
-# require "sinatra/reloader" if development?
+require "pry"
+require_relative "db_persistence"
 
 =begin
 TODO:
+# - set up DatabasePersistence class (require pg, database connection, etc)
+# - extract database code to separate class
+- format Due Date column to just show month and day
+- fix the sort and delete buttons
+- make example table and redo example page to use sql
+
+- sort reminders by date, agency, task name
+- add a complete button that you can check and uncheck
+- sort by complete / incomplete
+- fix sign in / sign out situation - create one user for the app?
 
 <% session[:reminders].each do |hash| %>
   <p><%= "[#{hash[:agency]}] - #{hash[:task]} is due on #{hash[:month]} #{hash[:day]}" %> <p>
@@ -11,17 +22,29 @@ TODO:
 
 configure do
   enable :sessions
-  # set :session_secret, 'super secret'
-
+  set :session_secret, 'secret'
   # set :erb, :escape_html => true
 end
 
+configure(:development) do
+  require "sinatra/reloader"
+  also_reload "db_persistence.rb"
+end
+
+# before do
+#   session[:reminders] ||= []
+# end
+
 before do
-  session[:reminders] ||= []
+  @storage = DatabasePersistence.new(logger)
+end
+
+after do
+  @storage.disconnect
 end
 
 helpers do
-  def agency_count
+  def agency_count #todo = do with SQL
     federal = 0
     state = 0
     local = 0
@@ -44,11 +67,12 @@ get "/" do
   erb :home
 end
 
-def valid_login?(username, password)
+def valid_login?(username, password) #todo = validate user from db?
   (username == session[:username]) && (password == session[:password]) ? true : false
 end
 
-post "/signin" do # log in to account
+# log in to account
+post "/signin" do
   if valid_login?(params[:username].to_s, params[:password].to_s)
     session[:signed_in] = true
     redirect "/view"
@@ -58,7 +82,8 @@ post "/signin" do # log in to account
   end
 end
 
-get "/signup" do # sign up page
+# sign up page
+get "/signup" do
 
   erb :signup
 end
@@ -71,7 +96,8 @@ def error_for_sign_up(username, password)
   end
 end
 
-post "/signup/go" do # create new account
+# create new account
+post "/signup/go" do
   error = error_for_sign_up(params[:username], params[:password])
 
   if error
@@ -87,17 +113,19 @@ post "/signup/go" do # create new account
   end
 end
 
-post "/signout" do # log out of account
+# log out of account
+post "/signout" do
   session[:signed_in] = false
   session[:message] = "You have been signed out."
 
   redirect "/"
 end
 
-
-
+# view reminders
 get "/view" do
-  @reminders = session[:reminders]
+  # @reminders = session[:reminders]
+  @reminders = @storage.all_reminders
+
   if session[:signed_in] == false
     session[:error] = "You must be signed in to view this page."
     redirect "/"
@@ -109,21 +137,25 @@ end
 def error_for_inputs(task, day, month)
   if task.size >= 30
     "Task should be less than 30 characters"
-  elsif !(1..12).include?(month.to_i)
-    "Month should be between 1 and 12"
-  elsif !(1..31).include?(day.to_i)
-    "Day should be between 1 and 31"
+  # elsif !(1..12).include?(month.to_i)
+  #   "Month should be between 1 and 12"
+  # elsif !(1..31).include?(day.to_i)
+  #   "Day should be between 1 and 31"
   end
 end
 
 post "/view/add" do
   # if valid_input?(params[:task], params[:day], params[:month], params[:agency])
+  task = params[:task]
+  date = params[:date]
+  agency = params[:agency]
   error = error_for_inputs(params[:task], params[:day], params[:month])
   if error
     session[:error] = error
     # erb :view
   else
-    session[:reminders] << {task: params[:task], day: params[:day], month: params[:month], agency: params[:agency]}
+    @storage.create_reminder(task, date, agency)
+    # session[:reminders] << {task: params[:task], day: params[:day], month: params[:month], agency: params[:agency]}
     session[:message] = "Success! Reminder was added."
   end
 
@@ -142,9 +174,11 @@ post "/delete/all" do
   redirect "/view"
 end
 
-post "/delete/:idx" do
-  idx = params[:idx].to_i
-  session[:reminders].delete_at(idx)
+post "/delete/:id" do
+  # idx = params[:idx].to_i
+  # session[:reminders].delete_at(idx)
+  id = params[:id].to_i
+  @storage.delete_reminder(id)
   session[:message] = "Reminder successfully deleted."
   redirect "/view"
 end
