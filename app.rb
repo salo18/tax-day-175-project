@@ -6,18 +6,16 @@ require_relative "db_persistence"
 TODO:
 # - set up DatabasePersistence class (require pg, database connection, etc)
 # - extract database code to separate class
-- format Due Date column to just show month and day
-- fix the sort and delete buttons
-- make example table and redo example page to use sql
+# - format Due Date column to just show month and day
+# - fix the sort and delete buttons
+# - make example table and redo example page to use sql
+# - fix agency_count method
 
 - sort reminders by date, agency, task name
 - add a complete button that you can check and uncheck
 - sort by complete / incomplete
 - fix sign in / sign out situation - create one user for the app?
 
-<% session[:reminders].each do |hash| %>
-  <p><%= "[#{hash[:agency]}] - #{hash[:task]} is due on #{hash[:month]} #{hash[:day]}" %> <p>
-<% end %>
 =end
 
 configure do
@@ -45,22 +43,24 @@ end
 
 helpers do
   def agency_count #todo = do with SQL
+    result = @storage.count_agency
+
     federal = 0
     state = 0
     local = 0
 
-    session[:reminders].each do |hash|
-      if hash[:agency] == "federal"
-        federal += 1
-      elsif hash[:agency] == "state"
-        state += 1
-      elsif hash[:agency] == "local"
-        local += 1
+    result.each do |tuple|
+      if tuple[:agency] == "local"
+        local = tuple[:count]
+      elsif tuple[:agency] == "federal"
+        federal = tuple[:count]
+      elsif tuple[:agency] == "state"
+        state = tuple[:count]
       end
     end
-    "#{federal} Federal, #{state} State and #{local} Local"
-  end
 
+    "You have #{result.size} reminders... #{federal} Federal, #{state} State and #{local} Local reminder."
+  end
 end
 
 get "/" do
@@ -134,13 +134,9 @@ get "/view" do
   end
 end
 
-def error_for_inputs(task, day, month)
+def error_for_inputs(task)
   if task.size >= 30
     "Task should be less than 30 characters"
-  # elsif !(1..12).include?(month.to_i)
-  #   "Month should be between 1 and 12"
-  # elsif !(1..31).include?(day.to_i)
-  #   "Day should be between 1 and 31"
   end
 end
 
@@ -149,7 +145,7 @@ post "/view/add" do
   task = params[:task]
   date = params[:date]
   agency = params[:agency]
-  error = error_for_inputs(params[:task], params[:day], params[:month])
+  error = error_for_inputs(params[:task])
   if error
     session[:error] = error
     # erb :view
@@ -169,7 +165,8 @@ post "/reset" do # reset password
 end
 
 post "/delete/all" do
-  session[:reminders].delete_if {|hash| hash.empty? == false }
+  # session[:reminders].delete_if {|hash| hash.empty? == false }
+  @storage.delete_all
   session[:message] = "All reminders deleted."
   redirect "/view"
 end
@@ -184,21 +181,40 @@ post "/delete/:id" do
 end
 
 get "/sort" do
-  session[:reminders].sort! {|a, b| a[:month].to_i <=> b[:month].to_i}
+  # session[:reminders].sort! {|a, b| a[:month].to_i <=> b[:month].to_i}
+  # @storage.sort_by_month
 
+  @reminders = @storage.sort_by_month
+
+  # @storage.all_reminders.sort! {|a, b| a[:due_date].to_i <=> b[:due_date].to_i }
+  # @storage.all_reminders(2)
+  # p @storage.all_reminders
+  # session[:sorter] = "month"
   redirect "/view"
 end
 
 get "/example" do
-  @example = [
-    {task: "File Q4 Sales Tax", month: 1, day: 1, agency: "State"},
-    {task: "File Corporate Tax Return", day: 15, month: 3, agency: "Federal"},
-    {task: "File Q1 Sales Tax", month: 4, day: 1, agency: "State"},
-    {task: "File Personal Tax Return", day: 15, month: 4, agency: "Federal"},
-    {task: "Renew City Business Tax", day: 1, month: 6, agency: "Local"},
-    {task: "File Q2 Sales Tax", month: 7, day: 1, agency: "State"},
-    {task: "File Q3 Sales Tax", month: 10, day: 1, agency: "State"},
-  ]
+  @example = @storage.list_example
+
   erb :example
 end
 
+# SORT FORM:
+# <form action="/sort" method="get" class="sorter">
+#   <label for="sort">Sort reminders by month due =></label>
+#   <input type="submit" value="Sort by month">
+# </form>
+
+# <% session[:reminders].each do |hash| %>
+#   <p><%= "[#{hash[:agency]}] - #{hash[:task]} is due on #{hash[:month]} #{hash[:day]}" %> <p>
+# <% end %>
+
+  # @example = [
+  #   {task: "File Q4 Sales Tax", month: 1, day: 1, agency: "State"},
+  #   {task: "File Corporate Tax Return", day: 15, month: 3, agency: "Federal"},
+  #   {task: "File Q1 Sales Tax", month: 4, day: 1, agency: "State"},
+  #   {task: "File Personal Tax Return", day: 15, month: 4, agency: "Federal"},
+  #   {task: "Renew City Business Tax", day: 1, month: 6, agency: "Local"},
+  #   {task: "File Q2 Sales Tax", month: 7, day: 1, agency: "State"},
+  #   {task: "File Q3 Sales Tax", month: 10, day: 1, agency: "State"},
+  # ]

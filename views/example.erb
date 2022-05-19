@@ -10,11 +10,11 @@
   </thead>
   <tbody>
     <% @example.each do |hash| %>
-    <tr>
-      <td><%= "#{hash[:task]}" %></td>
-      <td><%= "#{hash[:agency].capitalize}" %></td>
-      <td><%= "#{hash[:month]}/#{hash[:day]}" %></td>
-    </tr>
+      <tr>
+        <td><%= "#{hash[:task_name]}" %></td>
+        <td><%= "#{hash[:agency].capitalize}" %></td>
+        <td><%= "#{hash[:due_date].chars[5..-1].join}" %></td>
+      </tr>
     <% end %>
   </tbody>
 </table>

@@ -14,14 +14,25 @@ class DatabasePersistence
     @logger = logger
   end
 
-  def query(statement, *params)
-    @logger.info "#{statement}: #{params}"
-
-    @db.exec_params(statement, params)
-  end
-
   def disconnect
     @db.close
+  end
+
+  def list_example
+    sql = "SELECT * FROM example"
+    result = query(sql)
+
+    create_hash(result)
+  end
+
+  def count_agency
+    sql = "SELECT agency, COUNT(agency) FROM reminders GROUP BY agency;"
+    result = query(sql)
+    result.map do |tuple|
+      { agency: tuple["agency"],
+        count: tuple["count"]
+    }
+    end
   end
 
   def create_reminder(task, date, agency)
@@ -34,46 +45,42 @@ class DatabasePersistence
   end
 
   def all_reminders # display all reminders
-    sql = "SELECT * FROM reminders"
+    # if @@sorter == "month"
+    sql = "SELECT * FROM reminders ORDER BY due_date"
+    # elsif
+      # sql = "SELECT * FROM reminders"
+    # end
+
     result = query(sql)
-    x = result.map do |tuple|
-      { id: tuple["id"],
-        task_name: tuple["task_name"],
-        due_date: tuple["due_date"],
-        agency: tuple["agency"]
-      }
+
+    create_hash(result)
     end
-    # binding.pry
   end
 
   def delete_reminder(id)
     sql = "DELETE FROM reminders WHERE id = $1"
     query(sql, id)
   end
+
+  def delete_all
+    query("DELETE FROM reminders")
+  end
+
+  private
+
+  def query(statement, *params)
+    @logger.info "#{statement}: #{params}"
+
+    @db.exec_params(statement, params)
+  end
+
+  def create_hash(result)
+    result.map do |tuple|
+      { id: tuple["id"],
+        task_name: tuple["task_name"],
+        due_date: tuple["due_date"],
+        agency: tuple["agency"]
+      }
+  end
+
 end
-
-# <% @reminders.each do |hash| %>
-#   <tr>
-#     <td><%= "#{hash[:task_name]}" %></td>
-#     <td><%= "#{hash[:agency].capitalize}" %></td>
-#     <td><%= "#{hash[:due_date]}" %></td>
-#     <td>
-#       <form action="/delete/<%= idx %>" method="post" class="delete">
-#         <input type="submit" value="Delete">
-#       </form>
-#     </td>
-#   </tr>
-#   <% end %>
-
-#   <% session[:reminders].each_with_index do |hash, idx| %>
-#     <tr>
-#       <td><%= "#{hash[:task]}" %></td>
-#       <td><%= "#{hash[:agency].capitalize}" %></td>
-#       <td><%= "#{hash[:month]}/#{hash[:day]}" %></td>
-#       <td>
-#         <form action="/delete/<%= idx %>" method="post" class="delete">
-#           <input type="submit" value="Delete">
-#         </form>
-#       </td>
-#     </tr>
-#     <% end %>

@@ -15,24 +15,6 @@
 
   <dl>
     <dt>
-      <label for="month" class="dates">
-        Month Due
-        <dd><input type="number" name="month" id="month" placeholder="4" maxlength="2" min="1" max="12" ></dd>
-      </label>
-    </dt>
-  </dl>
-
-  <dl>
-    <dt>
-      <label for="day" class="dates">
-        Day Due
-        <dd><input type="number" name="day" id="day" placeholder="15" maxlength="2" min="1" max="31" ></dd>
-      </label>
-    </dt>
-  </dl>
-
-  <dl>
-    <dt>
       <label for="day" class="dates">
         Due Date (<em>Filing days are the same each year so input dates for 2022 only</em>)
         <dd><input type="date" name="date" id="date" value="2022-01-01" max="2022-12-31" min="2022-01-01" required></dd>
@@ -49,28 +31,20 @@
     <label for="local">Local</label>
   </dl>
   <input type="submit" value="Add">
-
   </fieldset>
 </form>
 
-
 <h2>Your Reminders</h2>
-<% if session[:reminders].empty? %>
+<% if @reminders.size == 0 %>
   <p>You have no reminders. Add one to get started.</p>
 <% else %>
-  <p>You have <%= session[:reminders].size %> reminders in place... <%= agency_count %></p>
+  <p><%= agency_count %></p>
 <% end %>
-
-<form action="/sort" method="get" class="sorter">
-  <label for="sort">Sort reminders by month due =></label>
-  <input type="submit" value="Sort">
-</form>
 
 <form action="/delete/all" method="post" class="sorter">
   <label for="delele-all">Delete all reminders =></label>
   <input type="submit" value="Delete All">
 </form>
-
 
 <table>
   <thead>
@@ -85,7 +59,7 @@
     <tr>
       <td><%= "#{hash[:task_name]}" %></td>
       <td><%= "#{hash[:agency].capitalize}" %></td>
-      <td><%= "#{hash[:due_date]}" %></td>
+      <td><%= "#{hash[:due_date].chars[5..-1].join}" %></td>
       <p><%= "#{hash}" %></p>
       <td>
         <form action="/delete/<%= hash[:id] %>" method="post" class="delete">
