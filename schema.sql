@@ -21,3 +21,4 @@ VALUES ('File Q4 Sales Tax', '2022-01-01', 'State'),
 ('File Q2 Sales Tax', '2022-07-01', 'State'),
 ('File Q3 Sales Tax', '2022-10-01', 'State')
 ;
+

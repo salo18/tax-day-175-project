@@ -10,12 +10,11 @@ TODO:
 # - fix the sort and delete buttons
 # - make example table and redo example page to use sql
 # - fix agency_count method
+# - fix sign in / sign out situation - create one user for the app?
 
 - sort reminders by date, agency, task name
 - add a complete button that you can check and uncheck
 - sort by complete / incomplete
-- fix sign in / sign out situation - create one user for the app?
-
 =end
 
 configure do
@@ -35,6 +34,7 @@ end
 
 before do
   @storage = DatabasePersistence.new(logger)
+  session[:signed_in] ||= false
 end
 
 after do
@@ -84,7 +84,6 @@ end
 
 # sign up page
 get "/signup" do
-
   erb :signup
 end
 
@@ -124,14 +123,15 @@ end
 # view reminders
 get "/view" do
   # @reminders = session[:reminders]
-  @reminders = @storage.all_reminders
 
   if session[:signed_in] == false
     session[:error] = "You must be signed in to view this page."
     redirect "/"
   else
+    @reminders = @storage.all_reminders
     erb :view
   end
+
 end
 
 def error_for_inputs(task)

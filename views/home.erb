@@ -1,3 +1,5 @@
+<p><% session[:signed_in] %></p>
+
 <% if session[:signed_in] == true  %>
   <p><% "You are signed in. Username is #{session[:username]} and password is #{session[:password]}"%></p>
 <% else %>
@@ -11,12 +13,12 @@
 
 <p>Use this site to keep track of city, state and federal tax deadlines.</p>
 
-<iframe src="https://giphy.com/embed/xEp3raFQkgpgY" width="480" height="346" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
-
 <p><a href="/example">Want to see an example?</a></p>
 
+<iframe src="https://giphy.com/embed/xEp3raFQkgpgY" width="480" height="346" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+
 <% if session[:signed_in] == false %>
-  <p>Ready to get started?</p>
+  <p>Ready to get started? Enter your username and password if you already have one.</p>
   <form action="/signin" method="post">
     <fieldset>
       <input type="text" name="username" placeholder="username" id="username" required>
@@ -25,13 +27,13 @@
     </fieldset>
   </form>
 
+  <p>Need an account? <a href="/signup">Sign up here</a>.</p>
+
   <p>Already have a username and password but want to reset them?<p/>
-  <p>If you do reset, you will have to make a new account by clicking the "Sign up" link below.<p/>
+  <p>If you do reset, you will have to make a new account by clicking the "Sign up" link above.<p/>
   <form action="/reset" method="post">
     <input type="submit" value="Reset">
   </form>
-
-  <p>Need an account? <a href="/signup">Sign up here</a>.</p>
 <% else %>
   <h2>Welcome <%= session[:username] %></h2>
   <p>You are already signed in! <a href="/view">Time to set up your reminders</a></p>

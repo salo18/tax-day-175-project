@@ -60,7 +60,6 @@
       <td><%= "#{hash[:task_name]}" %></td>
       <td><%= "#{hash[:agency].capitalize}" %></td>
       <td><%= "#{hash[:due_date].chars[5..-1].join}" %></td>
-      <p><%= "#{hash}" %></p>
       <td>
         <form action="/delete/<%= hash[:id] %>" method="post" class="delete">
           <input type="submit" value="Delete">
