@@ -25,6 +25,15 @@ class DatabasePersistence
     create_hash(result)
   end
 
+  def delete_reminder(id)
+    sql = "DELETE FROM reminders WHERE id = $1"
+    query(sql, id)
+  end
+
+  def delete_all
+    query("DELETE FROM reminders")
+  end
+
   def count_agency
     sql = "SELECT agency, COUNT(agency) FROM reminders GROUP BY agency;"
     result = query(sql)
@@ -55,15 +64,6 @@ class DatabasePersistence
 
     create_hash(result)
     end
-  end
-
-  def delete_reminder(id)
-    sql = "DELETE FROM reminders WHERE id = $1"
-    query(sql, id)
-  end
-
-  def delete_all
-    query("DELETE FROM reminders")
   end
 
   private
