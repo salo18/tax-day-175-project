@@ -59,7 +59,11 @@ helpers do
       end
     end
 
-    "You have #{result.size} reminders... #{federal} Federal, #{state} State and #{local} Local reminder."
+    if result.size == 1
+      "You have #{result.size} reminder... #{federal} Federal, #{state} State and #{local} Local."
+    else
+      "You have #{result.size} reminders... #{federal} Federal, #{state} State and #{local} Local."
+    end
   end
 end
 
