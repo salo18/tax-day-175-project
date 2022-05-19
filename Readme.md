@@ -6,7 +6,8 @@ My business has different tax filings due to local, state and federal agencies a
 
 I had fun making this app! I got to practice:
 - designing my routes with Sinatra
-- using the session to keep track of a user's login status 
+- using the session to keep track of a user's login status
 - connecting an app to a database and using SQL to store and retrieve user input
 - designing forms and tables with HTML and CSS
 
+Looking forward to expanding on this app in the future!
